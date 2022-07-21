@@ -1,0 +1,54 @@
+ALTER   PROC [dbo].[BasketballTeams_Pagination]
+
+		@PageIndex int
+	   ,@PageSize int
+AS
+
+/* ---- TEST CODE ----
+
+	DECLARE @PageIndex int = 0, @PageSize int = 10
+
+	EXECUTE dbo.BasketballTeams_Pagination @PageIndex, @PageSize
+
+	SELECT *
+	FROM [dbo].[BasketballTeams]
+
+	SELECT* 
+	FROM [dbo].[PlayerTeam]
+
+	SELECT *
+	FROM [dbo].[Players]
+
+
+*/ ---- END TEST CODE ----
+
+BEGIN
+	
+	DECLARE @offset int = @PageIndex * @PageSize
+
+	SELECT
+
+			bt.[Id]
+		   ,bt.[Name]
+		   ,bt.[Venue]
+		   ,bst.[Term] as Term
+		   ,c.[Name] as CoachName
+		   ,Players = (
+						SELECT p.id AS id
+							  ,p.[Name] AS [Name]
+						FROM [dbo].[Players] AS p INNER JOIN [dbo].[PlayerTeam] AS pt
+						ON pt.PlayerId = p.Id
+						WHERE pt.TeamId = bt.Id
+						FOR JSON AUTO)
+		   ,TotalCount = COUNT(1) OVER()
+
+	FROM [dbo].[BasketballTeams] AS bt INNER JOIN [dbo].[B-SeasonTerm] AS bst
+	ON bst.Id = bt.SeasonTermId INNER JOIN [dbo].[Coaches] AS c
+	ON c.Id = bt.CoachId
+
+	ORDER BY Id
+
+OFFSET @offset ROWS
+FETCH NEXT @PageSize ROWS ONLY
+
+END
