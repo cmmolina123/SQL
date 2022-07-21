@@ -1,0 +1,47 @@
+CREATE OR ALTER PROC [dbo].[BasketballTeams_SelectById]
+
+	@Id int
+
+AS
+
+/* ---- TEST CODE ----
+
+	DECLARE @Id int = 2
+
+	EXECUTE [dbo].[BasketballTeams_SelectById] @Id
+
+	SELECT *
+	FROM [dbo].[BasketballTeams]
+
+	SELECT* 
+	FROM [dbo].[PlayerTeam]
+
+	SELECT *
+	FROM [dbo].[Players]
+
+
+*/ ---- END TEST CODE ----
+
+BEGIN
+
+	SELECT
+			bt.[Id]
+		   ,bt.[Name]
+		   ,bt.[Venue]
+		   ,bst.[Term] as Term
+		   ,c.[Name] as CoachName
+		   ,Players = (
+						SELECT p.id AS id
+							  ,p.[Name] AS [Name]
+						FROM [dbo].[Players] AS p INNER JOIN [dbo].[PlayerTeam] AS pt
+						ON pt.PlayerId = p.Id
+						WHERE pt.TeamId = bt.Id
+						FOR JSON AUTO)
+		   ,TotalCount = COUNT(1) OVER()
+
+	FROM [dbo].[BasketballTeams] AS bt INNER JOIN [dbo].[B-SeasonTerm] AS bst
+	ON bst.Id = bt.SeasonTermId INNER JOIN [dbo].[Coaches] AS c
+	ON c.Id = bt.CoachId
+	WHERE bt.Id = @Id 
+
+END 
