@@ -1,0 +1,55 @@
+CREATE OR ALTER PROC [dbo].[BasketballTeams_Insert]
+
+		@Name nvarchar(200)
+	   ,@Venue nvarchar(200)
+	   ,@SeasonTermId int
+	   ,@CoachId int
+	   ,@Id int OUTPUT
+AS
+
+/* ---- TEST CODE ----
+
+	DECLARE @Id int = 1
+
+	DECLARE @Name nvarchar(200) = 'New York Knicks'
+		   ,@Venue nvarchar(200) = 'Madison Square Garden'
+		   ,@SeasonTermId int = 1
+		   ,@CoachId int = 2
+
+	EXECUTE [dbo].[BasketballTeams_Insert]
+
+			@Name 
+		   ,@Venue 
+		   ,@SeasonTermId 
+		   ,@CoachId 
+		   ,@Id
+
+	SELECT @Id
+
+	SELECT *
+	FROM [dbo].[BasketballTeams]
+
+	WHERE Id = @Id
+
+
+
+*/ ---- TEST CODE ----
+
+BEGIN
+	
+	INSERT INTO [dbo].[BasketballTeams]
+			([Name]
+			,[Venue]
+			,[SeasonTermId]
+			,[CoachId]
+			)
+
+	VALUES
+			(@Name
+			,@Venue
+			,@SeasonTermId
+			,@CoachId
+			)
+	SET @Id = SCOPE_IDENTITY()
+
+END
