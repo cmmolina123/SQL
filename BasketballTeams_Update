@@ -1,0 +1,46 @@
+CREATE OR ALTER PROC [dbo].[BasketballTeams_Update]
+
+	    @Name nvarchar(200)
+	   ,@Venue nvarchar(200)
+	   ,@SeasonTermId int
+	   ,@CoachId int
+	   ,@Id int OUTPUT
+	  
+
+/* ---- TEST CODE ----
+
+	DECLARE @Id int = 1;
+
+	DECLARE	 @Name nvarchar(200) = 'Golden State Warriors'
+		    ,@Venue nvarchar(200) = 'Oakland Arena'
+		    ,@SeasonTermId int = 2
+		    ,@CoachId int = 1
+
+	EXECUTE [dbo].[BasketballTeams_Update]
+			
+			 @Name 
+		    ,@Venue 
+		    ,@SeasonTermId 
+		    ,@CoachId 
+			,@Id
+
+	SELECT * 
+	FROM [dbo].[BasketballTeams]
+	
+
+*/ ---- TEST CODE ----
+
+AS
+
+BEGIN
+
+	UPDATE [dbo].[BasketballTeams]
+
+	SET  [Name] = @Name 
+		,[Venue] = @Venue 
+		,[SeasonTermId] = @SeasonTermId 
+		,[CoachId] = @CoachId
+	
+	WHERE Id = @Id
+
+END
